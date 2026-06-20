@@ -22,9 +22,40 @@ This tool does that for you.
 
 ## Usage
 
-```bash
-cargo run
-```
+Follow these steps to set up and use the tool:
+
+1. **Create a repository on GitHub** (with any name you like).
+
+2. **Initialize git locally** in your project folder:
+
+   ```bash
+   git init
+   ```
+
+3. **Add your remote origin** (replace with your actual GitHub repo URL):
+
+   ```bash
+   git remote add origin <your-repo-url>
+   ```
+
+4. **Build the project** in release mode:
+
+   ```bash
+   cargo build --release
+   ```
+
+   If there are any errors, they will show up in the terminal. Fix them before moving to the next step.
+
+5. **Install the tool** once the build is error-free:
+
+   ```bash
+   cargo install --path .
+   ```
+
+6. **Run it** by typing the project/binary name in the terminal:
+   ```bash
+   name of the repo
+   ```
 
 That's it. It will add, commit, and push automatically.
 
