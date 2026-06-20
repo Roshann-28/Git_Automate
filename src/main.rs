@@ -13,11 +13,14 @@ fn git_automate(){
         eprintln!("Error: Failed to add files to the git repo .");
         exit(1);
     }
+
+    let commit_message = format!("auto: {}", name_generator());
+
     // git commit -m "Your message"
     let commit_command = Command::new("git")
         .arg("commit")
         .arg("-m")
-        .arg(name_generator())
+        .arg(&commit_message)
         .output()
         .expect("Failed to execute git commit command ");
 
@@ -41,7 +44,7 @@ fn git_automate(){
         exit(1);
     }
 
-    println!("Succesfully added, commited, and pushed all changes! ");
+    println!("Succesfully added, commited (\"{}\"), and pushed all changes!", commit_message);
 }
 
 fn name_generator() -> String{
