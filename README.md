@@ -11,8 +11,10 @@ This tool does that for you.
 ## How it works
 
 1. Runs `git add -A` to stage all changes.
-2. Generates a random commit message (using the `names` crate) and commits with it.
-3. Runs `git push origin master` to push the changes.
+2. Checks if there is anything to commit — if not, it exits cleanly with a message.
+3. Generates a random commit message (using the `names` crate) and commits with it.
+4. Runs `git push origin master` to push the changes.
+5. If anything fails, it shows the exact error from git so you know what went wrong.
 
 ## Requirements
 
@@ -61,6 +63,20 @@ That's it. It will add, commit, and push automatically.
 
 ## Status
 
-This project is newly created. It works at a basic level, but it still has some rough edges
-(e.g. hardcoded branch name, simple error handling, random commit messages).
-These will be fixed and improved in future updates.
+This project is newly created and still a work in progress.
+
+**Recently improved:**
+
+- Added a check for nothing to commit — exits cleanly instead of crashing.
+- Better error messages — now shows the exact git error in the terminal when something fails.
+
+**Still to be fixed/improved:**
+
+- Branch name is hardcoded to `master` (will add auto-detection later).
+- Commit messages are random words, not descriptive (will improve later).
+
+More updates coming soon.
+
+## License
+
+MIT
