@@ -10,8 +10,21 @@ fn git_automate(){
         .expect("Failed to execute git add Command");
 
     if !add_command.status.success(){
-        eprintln!("Error: Failed to add files to the git repo .");
+        eprintln!("Error: Failed to add files to the git repo.\n{}", String::from_utf8_lossy(&add_command.stderr));
         exit(1);
+    }
+
+    // Check if there is anything staged to commit
+    let nothing_to_commit = Command::new("git")
+        .arg("diff")
+        .arg("--cached")
+        .arg("--quiet")
+        .output()
+        .expect("Failed to check git status");
+
+    if nothing_to_commit.status.success(){
+        println!("Nothing to commit, working tree clean.");
+        return;
     }
 
     let commit_message = format!("auto: {}", name_generator());
@@ -22,10 +35,10 @@ fn git_automate(){
         .arg("-m")
         .arg(&commit_message)
         .output()
-        .expect("Failed to execute git commit command ");
+        .expect("Failed to execute git commit command");
 
     if !commit_command.status.success(){
-        eprintln!("Error: Failed to commit changes .");
+        eprintln!("Error: Failed to commit changes.\n{}", String::from_utf8_lossy(&commit_command.stderr));
         exit(1);
     }
 
@@ -37,10 +50,9 @@ fn git_automate(){
         .arg("master")
         .output()
         .expect("Failed to execute git push command");
-    
 
     if !push_command.status.success(){
-        eprintln!("Error: Failed to push changes to remote. ");
+        eprintln!("Error: Failed to push changes to remote.\n{}", String::from_utf8_lossy(&push_command.stderr));
         exit(1);
     }
 
