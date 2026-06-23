@@ -1,16 +1,30 @@
 use std::process::{Command, exit};
 use names::Generator;
 
-fn git_automate(){
+fn ensure_git_installed() {
+    if Command::new("git")
+        .arg("--version")
+        .output()
+        .is_err()
+    {
+        eprintln!("Error: Git is not installed or not found in PATH.");
+        exit(1);
+    }
+}
+
+fn git_automate() {
     // git add -A
     let add_command = Command::new("git")
         .arg("add")
         .arg("-A")
         .output()
-        .expect("Failed to execute git add Command");
+        .expect("Failed to execute git add command");
 
-    if !add_command.status.success(){
-        eprintln!("Error: Failed to add files to the git repo.\n{}", String::from_utf8_lossy(&add_command.stderr));
+    if !add_command.status.success() {
+        eprintln!(
+            "Error: Failed to add files to the git repo.\n{}",
+            String::from_utf8_lossy(&add_command.stderr)
+        );
         exit(1);
     }
 
@@ -22,14 +36,14 @@ fn git_automate(){
         .output()
         .expect("Failed to check git status");
 
-    if nothing_to_commit.status.success(){
+    if nothing_to_commit.status.success() {
         println!("Nothing to commit, working tree clean.");
         return;
     }
 
     let commit_message = format!("auto: {}", name_generator());
 
-    // git commit -m "Your message"
+    // git commit -m "message"
     let commit_command = Command::new("git")
         .arg("commit")
         .arg("-m")
@@ -37,13 +51,15 @@ fn git_automate(){
         .output()
         .expect("Failed to execute git commit command");
 
-    if !commit_command.status.success(){
-        eprintln!("Error: Failed to commit changes.\n{}", String::from_utf8_lossy(&commit_command.stderr));
+    if !commit_command.status.success() {
+        eprintln!(
+            "Error: Failed to commit changes.\n{}",
+            String::from_utf8_lossy(&commit_command.stderr)
+        );
         exit(1);
     }
 
     // git push origin master
-    // origin -> remote repo
     let push_command = Command::new("git")
         .arg("push")
         .arg("origin")
@@ -51,20 +67,26 @@ fn git_automate(){
         .output()
         .expect("Failed to execute git push command");
 
-    if !push_command.status.success(){
-        eprintln!("Error: Failed to push changes to remote.\n{}", String::from_utf8_lossy(&push_command.stderr));
+    if !push_command.status.success() {
+        eprintln!(
+            "Error: Failed to push changes to remote.\n{}",
+            String::from_utf8_lossy(&push_command.stderr)
+        );
         exit(1);
     }
 
-    println!("Succesfully added, commited (\"{}\"), and pushed all changes!", commit_message);
+    println!(
+        "Successfully added, committed (\"{}\"), and pushed all changes!",
+        commit_message
+    );
 }
 
-fn name_generator() -> String{
+fn name_generator() -> String {
     let mut generator = Generator::default();
     generator.next().unwrap()
 }
 
-
 fn main() {
+    ensure_git_installed();
     git_automate();
 }
