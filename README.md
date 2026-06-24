@@ -13,7 +13,7 @@ This tool does that for you.
 1. Runs `git add -A` to stage all changes.
 2. Checks if there is anything to commit — if not, it exits cleanly with a message.
 3. Generates a random commit message (using the `names` crate) and commits with it.
-4. Runs `git push origin master` to push the changes.
+4. Detects the current branch automatically and runs `git push origin <branch>`.
 5. If anything fails, it shows the exact error from git so you know what went wrong.
 
 ## Requirements
@@ -30,34 +30,35 @@ Follow these steps to set up and use the tool:
 
 2. **Initialize git locally** in your project folder:
 
-   ```bash
+```bash
    git init
-   ```
+```
 
 3. **Add your remote origin** (replace with your actual GitHub repo URL):
 
-   ```bash
+```bash
    git remote add origin <your-repo-url>
-   ```
+```
 
 4. **Build the project** in release mode:
 
-   ```bash
+```bash
    cargo build --release
-   ```
+```
 
-   If there are any errors, they will show up in the terminal. Fix them before moving to the next step.
+If there are any errors, they will show up in the terminal. Fix them before moving to the next step.
 
 5. **Install the tool** once the build is error-free:
 
-   ```bash
+```bash
    cargo install --path .
-   ```
+```
 
 6. **Run it** by typing the project/binary name in the terminal:
-   ```bash
+
+```bash
    name of the repo
-   ```
+```
 
 That's it. It will add, commit, and push automatically.
 
@@ -69,10 +70,10 @@ This project is newly created and still a work in progress.
 
 - Added a check for nothing to commit — exits cleanly instead of crashing.
 - Better error messages — now shows the exact git error in the terminal when something fails.
+- Branch is now detected automatically using `git rev-parse --abbrev-ref HEAD` — no longer hardcoded to `master`.
 
 **Still to be fixed/improved:**
 
-- Branch name is hardcoded to `master` (will add auto-detection later).
 - Commit messages are random words, not descriptive (will improve later).
 
 More updates coming soon.
