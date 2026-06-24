@@ -12,6 +12,25 @@ fn ensure_git_installed() {
     }
 }
 
+fn get_current_branch() -> String {
+    let output = Command::new("git")
+        .arg("rev-parse")
+        .arg("--abbrev-ref")
+        .arg("HEAD")
+        .output()
+        .expect("Failed to detect current git branch");
+
+    if !output.status.success() {
+        eprintln!(
+            "Error: Could not determine current branch.\n{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        exit(1);
+    }
+
+    String::from_utf8_lossy(&output.stdout).trim().to_string()
+}
+
 fn git_automate() {
     // git add -A
     let add_command = Command::new("git")
@@ -59,11 +78,14 @@ fn git_automate() {
         exit(1);
     }
 
-    // git push origin master
+    // Detect branch dynamically instead of hardcoding "master"
+    let branch = get_current_branch();
+
+    // git push origin <branch>
     let push_command = Command::new("git")
         .arg("push")
         .arg("origin")
-        .arg("master")
+        .arg(&branch)
         .output()
         .expect("Failed to execute git push command");
 
@@ -76,8 +98,8 @@ fn git_automate() {
     }
 
     println!(
-        "Successfully added, committed (\"{}\"), and pushed all changes!",
-        commit_message
+        "Successfully added, committed (\"{}\"), and pushed all changes to '{}'!",
+        commit_message, branch
     );
 }
 
